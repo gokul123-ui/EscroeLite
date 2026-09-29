@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EscrowLite - Secure Milestone & Payment Management</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">Escrow<span class="highlight">Lite</span></span>
+                    <span class="brand-subtitle">Smart Milestone Escrow System</span>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <button id="btn-refresh-data" class="btn btn-secondary btn-sm" title="Refresh Dashboard">
+                    <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                </button>
+                <button id="btn-open-create-modal" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-plus"></i> New Project
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-content">
+        <!-- Stats Summary Dashboard -->
+        <section class="stats-section">
+            <div class="stat-card" id="card-total-projects">
+                <div class="stat-icon-wrapper blue">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Total Projects</span>
+                    <h3 class="stat-value" id="stat-total-projects">0</h3>
+                </div>
+            </div>
+
+            <div class="stat-card" id="card-active-projects">
+                <div class="stat-icon-wrapper amber">
+                    <i class="fa-solid fa-spinner"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Active Projects</span>
+                    <h3 class="stat-value" id="stat-active-projects">0</h3>
+                </div>
+            </div>
+
+            <div class="stat-card" id="card-total-amount">
+                <div class="stat-icon-wrapper purple">
+                    <i class="fa-solid fa-vault"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Total Amount</span>
+                    <h3 class="stat-value" id="stat-total-amount">$0.00</h3>
+                </div>
+            </div>
+
+            <div class="stat-card" id="card-released-amount">
+                <div class="stat-icon-wrapper emerald">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Released Amount</span>
+                    <h3 class="stat-value" id="stat-released-amount">$0.00</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Workflow Banner (College Project Demo Visualizer) -->
+        <div class="workflow-banner">
+            <div class="workflow-header">
+                <i class="fa-solid fa-diagram-project"></i> Escrow Lifecycle Workflow
+            </div>
+            <div class="workflow-steps">
+                <div class="step"><span class="step-num">1</span> Create Project</div>
+                <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                <div class="step"><span class="step-num">2</span> Add Milestone</div>
+                <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                <div class="step"><span class="step-num">3</span> Start Milestone</div>
+                <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                <div class="step"><span class="step-num">4</span> Mark Completed</div>
+                <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                <div class="step highlight-step"><span class="step-num">5</span> Release Payment</div>
+            </div>
+        </div>
+
+        <!-- Two Column Content Grid -->
+        <div class="content-grid">
+            <!-- Left Column: Projects List -->
+            <section class="panel projects-panel">
+                <div class="panel-header">
+                    <div class="panel-title-area">
+                        <h2><i class="fa-solid fa-list-check"></i> Projects</h2>
+                        <span class="badge badge-neutral" id="project-count-badge">0 Projects</span>
+                    </div>
+                    <div class="filter-search-box">
+                        <div class="search-input-wrapper">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="project-search-input" placeholder="Search project or client...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div id="projects-list" class="projects-list-container">
+                        <!-- Dynamic Project Cards Loaded Here -->
+                        <div class="loading-state">
+                            <i class="fa-solid fa-circle-notch fa-spin"></i>
+                            <p>Loading projects...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Column: Project Details & Milestones Workspace -->
+            <section class="panel details-panel" id="details-workspace">
+                <div id="no-project-selected" class="empty-selection-state">
+                    <div class="empty-icon"><i class="fa-solid fa-hand-pointer"></i></div>
+                    <h3>No Project Selected</h3>
+                    <p>Select a project from the left to view milestones, track progress, and release escrow payments.</p>
+                </div>
+
+                <div id="project-details-content" class="project-details-content" style="display: none;">
+                    <!-- Selected Project Header -->
+                    <div class="project-detail-header">
+                        <div class="header-top">
+                            <div>
+                                <span class="badge" id="detail-project-status">ACTIVE</span>
+                                <h2 id="detail-project-name">Project Name</h2>
+                            </div>
+                            <div class="detail-actions">
+                                <button id="btn-add-milestone" class="btn btn-primary btn-sm">
+                                    <i class="fa-solid fa-plus"></i> Add Milestone
+                                </button>
+                                <button id="btn-delete-project" class="btn btn-danger-outline btn-sm" title="Delete Project">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <p class="detail-desc" id="detail-project-desc">Project description goes here...</p>
+
+                        <div class="project-meta-grid">
+                            <div class="meta-item">
+                                <span class="meta-label"><i class="fa-solid fa-user-tie"></i> Client</span>
+                                <span class="meta-val" id="detail-client-name">-</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label"><i class="fa-solid fa-laptop-code"></i> Freelancer</span>
+                                <span class="meta-val" id="detail-freelancer-name">-</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label"><i class="fa-solid fa-coins"></i> Total Budget</span>
+                                <span class="meta-val" id="detail-total-amount">$0.00</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label"><i class="fa-solid fa-circle-check"></i> Escrow Released</span>
+                                <span class="meta-val text-success" id="detail-released-amount">$0.00</span>
+                            </div>
+                        </div>
+
+                        <!-- Project Progress Bar -->
+                        <div class="progress-container">
+                            <div class="progress-info">
+                                <span>Milestone Completion & Payout</span>
+                                <span id="project-progress-percent">0%</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="project-progress-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Milestone Section -->
+                    <div class="milestones-section">
+                        <div class="section-title-bar">
+                            <h3><i class="fa-solid fa-flag-checkered"></i> Project Milestones</h3>
+                            <span class="badge badge-neutral" id="milestone-count-badge">0 Milestones</span>
+                        </div>
+
+                        <div id="milestones-list" class="milestones-list-container">
+                            <!-- Dynamic Milestones Loaded Here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal: Create New Project -->
+    <div class="modal-overlay" id="modal-create-project">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-folder-plus"></i> Create New Project</h3>
+                <button class="modal-close-btn" data-close="modal-create-project">&times;</button>
+            </div>
+            <form id="form-create-project">
+                <div class="form-group">
+                    <label for="proj-name">Project Name <span class="required">*</span></label>
+                    <input type="text" id="proj-name" required placeholder="e.g. E-Commerce Web App">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="proj-client">Client Name <span class="required">*</span></label>
+                        <input type="text" id="proj-client" required placeholder="e.g. Alex Henderson">
+                    </div>
+                    <div class="form-group">
+                        <label for="proj-freelancer">Freelancer Name <span class="required">*</span></label>
+                        <input type="text" id="proj-freelancer" required placeholder="e.g. Sarah Jenkins">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="proj-amount">Total Contract Amount ($) <span class="required">*</span></label>
+                    <input type="number" id="proj-amount" step="0.01" min="1" required placeholder="e.g. 2500.00">
+                </div>
+
+                <div class="form-group">
+                    <label for="proj-desc">Project Description</label>
+                    <textarea id="proj-desc" rows="3" placeholder="Brief outline of deliverables, objectives, and scope..."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-close="modal-create-project">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Create Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add New Milestone -->
+    <div class="modal-overlay" id="modal-add-milestone">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-flag"></i> Add Milestone</h3>
+                <button class="modal-close-btn" data-close="modal-add-milestone">&times;</button>
+            </div>
+            <form id="form-add-milestone">
+                <input type="hidden" id="milestone-project-id">
+                
+                <div class="form-group">
+                    <label for="ms-title">Milestone Title <span class="required">*</span></label>
+                    <input type="text" id="ms-title" required placeholder="e.g. UI/UX Wireframe & Design Approval">
+                </div>
+
+                <div class="form-group">
+                    <label for="ms-amount">Milestone Amount ($) <span class="required">*</span></label>
+                    <input type="number" id="ms-amount" step="0.01" min="1" required placeholder="e.g. 500.00">
+                </div>
+
+                <div class="form-group">
+                    <label for="ms-desc">Milestone Deliverable / Description</label>
+                    <textarea id="ms-desc" rows="3" placeholder="Specify deliverables required before payment release..."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-close="modal-add-milestone">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Milestone</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
